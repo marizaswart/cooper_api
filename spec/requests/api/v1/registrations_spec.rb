@@ -1,12 +1,14 @@
+require 'rails_helper'
+
 RSpec.describe 'User Registration', type: :request do
   let(:headers) { { HTTP_ACCEPT: 'application/json' } }
 
   context 'with valid credentials' do
     it 'returns a user and token' do
       post '/api/v1/auth', params: {
-          email: 'example@craftacademy.se', password: 'password',
-          password_confirmation: 'password'
-      },  headers: headers
+        email: 'example@craftacademy.se', password: 'password',
+        password_confirmation: 'password'
+      }, headers: headers
 
       expect(response_json['status']).to eq 'success'
       expect(response.status).to eq 200
@@ -16,19 +18,19 @@ RSpec.describe 'User Registration', type: :request do
   context 'returns an error message when user submits' do
     it 'non-matching password confirmation' do
       post '/api/v1/auth', params: {
-          email: 'example@craftacademy.se', password: 'password',
-          password_confirmation: 'wrong_password'
+        email: 'example@craftacademy.se', password: 'password',
+        password_confirmation: 'wrong_password'
       }, headers: headers
 
       expect(response_json['errors']['password_confirmation'])
-          .to eq ["doesn't match Password"]
+        .to eq ["doesn't match Password"]
       expect(response.status).to eq 422
     end
 
     it 'an invalid email address' do
       post '/api/v1/auth', params: {
-          email: 'example@craft', password: 'password',
-          password_confirmation: 'password'
+        email: 'example@craft', password: 'password',
+        password_confirmation: 'password'
       }, headers: headers
 
       expect(response_json['errors']['email']).to eq ['is not an email']
@@ -41,8 +43,8 @@ RSpec.describe 'User Registration', type: :request do
                          password_confirmation: 'password')
 
       post '/api/v1/auth', params: {
-          email: 'example@craftacademy.se', password: 'password',
-          password_confirmation: 'password'
+        email: 'example@craftacademy.se', password: 'password',
+        password_confirmation: 'password'
       }, headers: headers
 
       expect(response_json['errors']['email']).to eq ['has already been taken']
